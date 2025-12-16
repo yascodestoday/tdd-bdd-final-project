@@ -11,6 +11,21 @@ From the GitHub **Code** page, press the green **Use this template** button to c
 Name your repo: `tdd-bdd-final-project`.
 
 ## Setup
+@app.route("/products/<int:product_id>", methods=["GET"])
+def get_products(product_id):
+    """
+    Retrieve a single Product
+
+    This endpoint will return a Product based on it's id
+    """
+    app.logger.info("Request to Retrieve a product with id [%s]", product_id)
+    
+    product = Product.find(product_id)
+    if not product:
+        abort(status.HTTP_404_NOT_FOUND, f"Product with id '{product_id}' was not found.")
+    
+    app.logger.info("Returning product: %s", product.name)
+    return product.serialize(), status.HTTP_200_OK
 
 After entering the lab environment you will need to run the `setup.sh` script in the `./bin` folder to install the prerequisite software.
 
@@ -19,7 +34,25 @@ bash bin/setup.sh
 ```
 
 Then you must exit the shell and start a new one for the Python virtual environment to be activated.
+@app.route("/products/<int:product_id>", methods=["PUT"])
+def update_products(product_id):
+    """
+    Update a Product
 
+    This endpoint will update a Product based on the body that is posted
+    """
+    app.logger.info("Request to Update a product with id [%s]", product_id)
+    
+    product = Product.find(product_id)
+    if not product:
+        abort(status.HTTP_404_NOT_FOUND, f"Product with id '{product_id}' was not found.")
+    
+    product.deserialize(request.get_json())
+    product.id = product_id
+    product.update()
+    
+    app.logger.info("Product with id [%s] updated", product_id)
+    return product.serialize(), status.HTTP_200_OK
 ```bash
 exit
 ```
@@ -27,7 +60,25 @@ exit
 ## Tasks
 
 In this project you will use good Test Driven Development (TDD) and Behavior Driven Development (BDD) techniques to write TDD test cases, BDD scenarios, and code, updating the following files:
+@app.route("/products/<int:product_id>", methods=["PUT"])
+def update_products(product_id):
+    """
+    Update a Product
 
+    This endpoint will update a Product based on the body that is posted
+    """
+    app.logger.info("Request to Update a product with id [%s]", product_id)
+    
+    product = Product.find(product_id)
+    if not product:
+        abort(status.HTTP_404_NOT_FOUND, f"Product with id '{product_id}' was not found.")
+    
+    product.deserialize(request.get_json())
+    product.id = product_id
+    product.update()
+    
+    app.logger.info("Product with id [%s] updated", product_id)
+    return product.serialize(), status.HTTP_200_OK
 ```bash
 tests/test_models.py
 tests/test_routes.py
